@@ -31,6 +31,7 @@ void poisson_dirichlet (double * __restrict__ source,
 	for (unsigned int iter = 0; iter < numiters; iter++) {
 		double res = 0;
 		
+		
 		for (unsigned int x = 0; x < xsize; x++) {
 			if (x > 0)
 			{
@@ -41,36 +42,66 @@ void poisson_dirichlet (double * __restrict__ source,
 							if (y < ysize - 1) {
 								// General y case
 								for (unsigned int z = 0; z < zsize; z++) {
-									//z cases
-									for (unsigned int z = 0; z < zsize; z++) {
-										if (z > 0)
-											if (z < zsize - 1) {
-												// General z case
-												res += input[(((z + 1) * ysize) + y) * xsize + x];
-											}
-											else {
-												// Maximum z case
-												res += input[(((z - 1) * ysize) + y) * xsize + x];
-											}
-										else {
-											// Minimum z case
-											res -= delta * delta * source[((z * ysize) + y) * xsize + x];
+									if (z > 0)
+										if (z < zsize - 1) {
+											// General z case
+											res += input[(((z + 1) * ysize) + y+1) * xsize + x-1];
 										}
+										else {
+											// Maximum z case
+											res += input[(((z - 1) * ysize) + y+1) * xsize + x-1];
+										}
+									else {
+										// Minimum z case
+										res += Vbound;
 									}
+									res -= delta * delta * source[((z * ysize) + y) * xsize + x-1];
+									res /= 6;
+									potential[((z * ysize) + y) * xsize + x] = res;
 								}
 							}
 							else {
 								// Maximum y edge case i.e. y = ysize - 1
 								for (unsigned int z = 0; z < zsize; z++) {
-									//ToDO
+									if (z > 0)
+										if (z < zsize - 1) {
+											// General z case
+											res += input[(((z + 1) * ysize) + y-1) * xsize + x-1];
+										}
+										else {
+											// Maximum z case
+											res += input[(((z - 1) * ysize) + y-1) * xsize + x-1];
+										}
+									else {
+										// Minimum z case
+										res += Vbound;
+									}
+									res -= delta * delta * source[((z * ysize) + y) * xsize + x-1];
+									res /= 6;
+									potential[((z * ysize) + y) * xsize + x] = res;
 								}
 							}
 						}
 						else {
 							// Minimum y edge case y = 0
 							for (unsigned int z = 0; z < zsize; z++) {
-								//ToDO
-							}
+									if (z > 0)
+										if (z < zsize - 1) {
+											// General z case
+											res += input[(((z + 1) * ysize) + y+1) * xsize + x-1];
+										}
+										else {
+											// Maximum z case
+											res += input[(((z - 1) * ysize) + y+1) * xsize + x-1];
+										}
+									else {
+										// Minimum z case
+										res += Vbound;
+									}
+									res -= delta * delta * source[((z * ysize) + y) * xsize + x-1];
+									res /= 6;
+									potential[((z * ysize) + y) * xsize + x] = res;
+								}
 						}
 					}
 				}
@@ -153,9 +184,7 @@ void poisson_dirichlet (double * __restrict__ source,
 						res += input[(((z - 1) * ysize) + y) * xsize + x];
 
 					res -= delta * delta * source[((z * ysize) + y) * xsize + x];
-
 					res /= 6;
-
 					potential[((z * ysize) + y) * xsize + x] = res;
 				}
 			}
