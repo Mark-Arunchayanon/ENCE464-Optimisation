@@ -29,37 +29,113 @@ void poisson_dirichlet (double * __restrict__ source,
 	}
 	memcpy(input, source, size);
 	for (unsigned int iter = 0; iter < numiters; iter++) {
+		double res = 0;
+		
 		for (unsigned int x = 0; x < xsize; x++) {
-			for (unsigned int z = 0; z < zsize; z++) {
+			if (x > 0)
+			{
+				if (x < xsize - 1) {
+					// General x case
+					for (unsigned int y = 0; y < ysize; y++) {
+						if (y > 0)
+							if (y < ysize - 1) {
+								// General y case
+								for (unsigned int z = 0; z < zsize; z++) {
+									//ToDO
+								}
+							}
+							else {
+								// Maximum y edge case i.e. y = ysize - 1
+								for (unsigned int z = 0; z < zsize; z++) {
+									//ToDO
+								}
+							}
+						}
+						else {
+							// Minimum y edge case y = 0
+							for (unsigned int z = 0; z < zsize; z++) {
+								//ToDO
+							}
+						}
+					}
+				}
+				else {
+					// Maximum x edge case i.e. x = zsize - 1
+					for (unsigned int y = 0; y < ysize; y++) {
+						if (y > 0)
+							if (y < ysize - 1) {
+								// General y case
+								for (unsigned int z = 0; z < zsize; z++) {
+									//ToDO
+								}
+							}
+							else {
+								// Maximum y edge case i.e. y = ysize - 1
+								for (unsigned int z = 0; z < zsize; z++) {
+									//ToDO
+								}
+							}
+						}
+						else {
+							// Minimum y edge case y = 0
+							for (unsigned int z = 0; z < zsize; z++) {
+								//ToDO
+							}
+						}
+					}
+				}
+			}
+			else {
+				// Minimum x edge case x = 0
 				for (unsigned int y = 0; y < ysize; y++) {
-					double res = 0;
-
-					if (x < xsize - 1)
-						res += input[((z * ysize) + y) * xsize + (x + 1)];
-					else
+					if (y > 0) {
+						if (y < ysize - 1) {
+							// General y case
+							for (unsigned int z = 0; z < zsize; z++) {
+								//ToDO
+							}
+						}
+						else {
+							// Maximum y edge case i.e. y = ysize - 1
+							for (unsigned int z = 0; z < zsize; z++) {
+								//ToDO
+							}
+						}
+					else {
+						// Minimum y edge case y = 0
+						for (unsigned int z = 0; z < zsize; z++) {
+							//ToDO
+						}
+			}
+					
 						res += Vbound;
+
 					if (x > 0)
 						res += input[((z * ysize) + y) * xsize + (x - 1)];
 					else
 						res += Vbound;
 
-					if (y < ysize - 1)
+			for (unsigned int z = 0; z < zsize; z++) {
+
+				if (y < ysize - 1)
 						res += input[((z * ysize) + (y + 1)) * xsize + x];
-					else
-						res += Vbound;
-					if (y > 0)
+				if (y > 0)
 						res += input[((z * ysize) + (y - 1)) * xsize + x];
-					else
-						res += Vbound;
+		
+				for (unsigned int y = 0; y < ysize; y++) {
+					
+
+					if (x < xsize - 1)
+						res += input[((z * ysize) + y) * xsize + (x + 1)];
+					if (x > 0)
+						res += input[((z * ysize) + y) * xsize + (x - 1)];
+
+					
 
 					if (z < zsize - 1)
 						res += input[(((z + 1) * ysize) + y) * xsize + x];
-					else
-						res += Vbound;
 					if (z > 0)
 						res += input[(((z - 1) * ysize) + y) * xsize + x];
-					else
-						res += Vbound;
 
 					res -= delta * delta * source[((z * ysize) + y) * xsize + x];
 
