@@ -41,7 +41,22 @@ void poisson_dirichlet (double * __restrict__ source,
 							if (y < ysize - 1) {
 								// General y case
 								for (unsigned int z = 0; z < zsize; z++) {
-									//ToDO
+									//z cases
+									for (unsigned int z = 0; z < zsize; z++) {
+										if (z > 0)
+											if (z < zsize - 1) {
+												// General z case
+												res += input[(((z + 1) * ysize) + y) * xsize + x];
+											}
+											else {
+												// Maximum z case
+												res += input[(((z - 1) * ysize) + y) * xsize + x];
+											}
+										else {
+											// Minimum z case
+											res -= delta * delta * source[((z * ysize) + y) * xsize + x];
+										}
+									}
 								}
 							}
 							else {
