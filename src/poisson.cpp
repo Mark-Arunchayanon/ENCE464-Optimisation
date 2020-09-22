@@ -31,32 +31,77 @@ void poisson_dirichlet (double * __restrict__ source,
 	for (unsigned int iter = 0; iter < numiters; iter++) {
 		double res = 0;
 
-		// Handle min, max conditions for x, y, z
-		// Deal with x = 0
-			// Set y = 0
-				// iterate through z
+		// Handle zero and maximum conditions for x, y, z
+		// Deal with x = zero
+			x = 0;
+			// Set y = zero
+			y = 0;
+                // iterate through two z cases
+				for (unsigned int z = 0; z < zsize; z += zsize) {
+					if (z < zsize - 1)
+						res += input[(((z + 1) * ysize) + y) * xsize + x];
+					else
+						res += Vbound;
+					if (z > 0)
+						res += input[(((z - 1) * ysize) + y) * xsize + x];
+					else
+						res += Vbound;
+				}
 			// Set y = max
-				// iterate through z
-
+				y = ysize;
+				// iterate through two z cases
+				for (unsigned int z = 0; z < zsize; z += zsize) {
+					if (z < zsize - 1)
+						res += input[(((z + 1) * ysize) + y) * xsize + x];
+					else
+						res += Vbound;
+					if (z > 0)
+						res += input[(((z - 1) * ysize) + y) * xsize + x];
+					else
+						res += Vbound;
+				}
 		// Deal with x = max
-			// Set y = 0
-				// iterate through z
+			x = xsize;
+			// Set y = zero
+			y = 0;
+				// // iterate through two z cases
+				for (unsigned int z = 0; z < zsize; z += zsize) {
+					if (z < zsize - 1)
+						res += input[(((z + 1) * ysize) + y) * xsize + x];
+					else
+						res += Vbound;
+					if (z > 0)
+						res += input[(((z - 1) * ysize) + y) * xsize + x];
+					else
+						res += Vbound;
+				}
 			// Set y = max
-				// iterate through z
+				y = ysize; 
+				// iterate through two z cases
+				for (unsigned int z = 0; z < zsize; z += zsize) {
+					if (z < zsize - 1)
+						res += input[(((z + 1) * ysize) + y) * xsize + x];
+					else
+						res += Vbound;
+					if (z > 0)
+						res += input[(((z - 1) * ysize) + y) * xsize + x];
+					else
+						res += Vbound;
+				}
 		
-		// Loop through general cases (i.e. 0 < x,y,z < maxSize) deal with zero and maximum seperately
+		// Loop through general cases (i.e. 0 < x,y,z < maximum) having dealt with zero and maximum seperately
 		//  Means no condition checking in loops
 		for (unsigned int x = 1; x < xsize-1; x++) {
 			for (unsigned int y = 1; y < ysize-1; y++) {
 				for (unsigned int z = 1; z < zsize-1; z++) {
-					res += input[(( (z) * ysize) + y ) * xsize + x + 1];
-					res += input[(( (z) * ysize) + y ) * xsize + x - 1];
+					res += input[(( (z) * ysize) + y ) * xsize + (x + 1)];
+					res += input[(( (z) * ysize) + y ) * xsize + (x - 1)];
 
-					res += input[((z * ysize) + (y + 1)) * xsize + x];
-					res += input[((z * ysize) + (y - 1)) * xsize + x];
+					res += input[( (z * ysize) + (y + 1) ) * xsize + x];
+					res += input[( (z * ysize) + (y - 1) ) * xsize + x];
 
-					res += input[(((z + 1) * ysize) + y) * xsize + x];
-					res += input[(((z - 1) * ysize) + y) * xsize + x];
+					res += input[(( (z + 1) * ysize) + y) * xsize + x];
+					res += input[(( (z - 1) * ysize) + y) * xsize + x];
 						
 					res -= delta * delta * source[((z * ysize) + y) * xsize + x];
 					res /= 6;
