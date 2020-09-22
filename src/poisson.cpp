@@ -30,13 +30,33 @@ void poisson_dirichlet (double * __restrict__ source,
 	memcpy(input, source, size);
 	for (unsigned int iter = 0; iter < numiters; iter++) {
 		double res = 0;
+
+		// Handle min, max conditions for x, y, z
+		// Deal with x = 0
+			// Set y = 0
+				// iterate through z
+			// Set y = max
+				// iterate through z
+
+		// Deal with x = max
+			// Set y = 0
+				// iterate through z
+			// Set y = max
+				// iterate through z
 		
 		// Loop through general cases (i.e. 0 < x,y,z < maxSize) deal with zero and maximum seperately
 		//  Means no condition checking in loops
 		for (unsigned int x = 1; x < xsize-1; x++) {
 			for (unsigned int y = 1; y < ysize-1; y++) {
 				for (unsigned int z = 1; z < zsize-1; z++) {
-					res += input[(( (z) * ysize) + y ) * xsize + x];
+					res += input[(( (z) * ysize) + y ) * xsize + x + 1];
+					res += input[(( (z) * ysize) + y ) * xsize + x - 1];
+
+					res += input[((z * ysize) + (y + 1)) * xsize + x];
+					res += input[((z * ysize) + (y - 1)) * xsize + x];
+
+					res += input[(((z + 1) * ysize) + y) * xsize + x];
+					res += input[(((z - 1) * ysize) + y) * xsize + x];
 						
 					res -= delta * delta * source[((z * ysize) + y) * xsize + x];
 					res /= 6;
@@ -44,18 +64,7 @@ void poisson_dirichlet (double * __restrict__ source,
 				}
 			}
 		}
-
-		// Deal with x = 0
-			// res += ysize * 2 *zsize * Vbound;
-			//Deal with y = 0
-				// res += 2 * zsize * Vbound;
-				
-		// Deal with x = max
-			// res += ysize * zsize * Vbound
-			//Deal with y = 0
-				// res += 2 * zsize * Vbound;
-			
-
+	
 		memcpy(input, potential, size);
 	}
 	free(input);
