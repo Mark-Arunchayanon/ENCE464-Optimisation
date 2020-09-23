@@ -32,68 +32,81 @@ void poisson_dirichlet (double * __restrict__ source,
 		double res = 0;
 
 		// Handle zero and maximum conditions for x, y, z
-		// Deal with x = zero
-			x = 0;
-			// Set y = zero
-			y = 0;
-                // iterate through two z cases
-				for (unsigned int z = 0; z < zsize; z += zsize) {
-					if (z < zsize - 1)
-						res += input[(((z + 1) * ysize) + y) * xsize + x];
-					else
-						res += Vbound;
-					if (z > 0)
-						res += input[(((z - 1) * ysize) + y) * xsize + x];
-					else
-						res += Vbound;
-				}
-			// Set y = max
-				y = ysize;
-				// iterate through two z cases
-				for (unsigned int z = 0; z < zsize; z += zsize) {
-					if (z < zsize - 1)
-						res += input[(((z + 1) * ysize) + y) * xsize + x];
-					else
-						res += Vbound;
-					if (z > 0)
-						res += input[(((z - 1) * ysize) + y) * xsize + x];
-					else
-						res += Vbound;
-				}
-		// Deal with x = max
-			x = xsize;
-			// Set y = zero
-			y = 0;
-				// // iterate through two z cases
-				for (unsigned int z = 0; z < zsize; z += zsize) {
-					if (z < zsize - 1)
-						res += input[(((z + 1) * ysize) + y) * xsize + x];
-					else
-						res += Vbound;
-					if (z > 0)
-						res += input[(((z - 1) * ysize) + y) * xsize + x];
-					else
-						res += Vbound;
-				}
-			// Set y = max
-				y = ysize; 
-				// iterate through two z cases
-				for (unsigned int z = 0; z < zsize; z += zsize) {
-					if (z < zsize - 1)
-						res += input[(((z + 1) * ysize) + y) * xsize + x];
-					else
-						res += Vbound;
-					if (z > 0)
-						res += input[(((z - 1) * ysize) + y) * xsize + x];
-					else
-						res += Vbound;
-				}
-		
+		// Deal with z = zero
+		z = 0;
+		// iterate through y loop
+		for (unsigned int y = 0; y < ysize; y++) {	
+			// iterate through x loop
+			for (unsigned int x = 0; x < zsize; x += xsize) {
+				if (x < xsize - 1)
+					res += input[((z * ysize) + y) * xsize + (x + 1)];
+				else
+					res += Vbound;
+				if (x > 0)
+					res += input[((z * ysize) + y) * xsize + (x - 1)];
+				else
+					res += Vbound;
+
+				if (y < ysize - 1)
+					res += input[((z * ysize) + (y + 1)) * xsize + x];
+				else
+					res += Vbound;
+				if (y > 0)
+					res += input[((z * ysize) + (y - 1)) * xsize + x];
+				else
+					res += Vbound;
+
+				if (z < zsize - 1)
+					res += input[(((z + 1) * ysize) + y) * xsize + x];
+				else
+					res += Vbound;
+				if (z > 0)
+					res += input[(((z - 1) * ysize) + y) * xsize + x];
+				else
+					res += Vbound;
+			}
+		}
+			
+		// Deal with z = max
+		z = zsize;
+		// iterate through y loop
+		for (unsigned int y = 0; y < ysize; y++) {	
+			// iterate through x loop
+			for (unsigned int x = 0; x < zsize; x += xsize) {
+				if (x < xsize - 1)
+					res += input[((z * ysize) + y) * xsize + (x + 1)];
+				else
+					res += Vbound;
+				if (x > 0)
+					res += input[((z * ysize) + y) * xsize + (x - 1)];
+				else
+					res += Vbound;
+
+				if (y < ysize - 1)
+					res += input[((z * ysize) + (y + 1)) * xsize + x];
+				else
+					res += Vbound;
+				if (y > 0)
+					res += input[((z * ysize) + (y - 1)) * xsize + x];
+				else
+					res += Vbound;
+
+				if (z < zsize - 1)
+					res += input[(((z + 1) * ysize) + y) * xsize + x];
+				else
+					res += Vbound;
+				if (z > 0)
+					res += input[(((z - 1) * ysize) + y) * xsize + x];
+				else
+					res += Vbound;
+			}
+		}
+
 		// Loop through general cases (i.e. 0 < x,y,z < maximum) having dealt with zero and maximum seperately
 		//  Means no condition checking in loops
-		for (unsigned int x = 1; x < xsize-1; x++) {
+		for (unsigned int z = 1; z < zsize-1; z++) {
 			for (unsigned int y = 1; y < ysize-1; y++) {
-				for (unsigned int z = 1; z < zsize-1; z++) {
+				for  {(unsigned int x = 1; x < xsize-1; x++)
 					res += input[(( (z) * ysize) + y ) * xsize + (x + 1)];
 					res += input[(( (z) * ysize) + y ) * xsize + (x - 1)];
 
