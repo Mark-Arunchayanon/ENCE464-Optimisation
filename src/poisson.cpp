@@ -31,7 +31,29 @@ void poisson_dirichlet (double * __restrict__ source,
 	for (unsigned int iter = 0; iter < numiters; iter++) {
 		double res = 0;
 
+		// Loop through general cases (i.e. 0 < x,y,z < maximum) having dealt with zero and maximum seperately
+		//  Means no condition checking in loops
+		for (unsigned int z = 1; z < zsize - 1; z++) {
+			for (unsigned int y = 1; y < ysize - 1; y++) {
+				for  {(unsigned int x = 1; x < xsize - 1; x++)
+					res += input[(( (z) * ysize) + y ) * xsize + (x + 1)];
+					res += input[(( (z) * ysize) + y ) * xsize + (x - 1)];
+
+					res += input[( (z * ysize) + (y + 1) ) * xsize + x];
+					res += input[( (z * ysize) + (y - 1) ) * xsize + x];
+
+					res += input[(( (z + 1) * ysize) + y) * xsize + x];
+					res += input[(( (z - 1) * ysize) + y) * xsize + x];
+						
+					res -= delta * delta * source[((z * ysize) + y) * xsize + x];
+					res /= 6;
+					potential[((z * ysize) + y) * xsize + x] = res;
+				}
+			}
+		}
+
 		// Handle zero and maximum conditions for x, y, z
+		// z cases
 		// Deal with z = zero
 		z = 0;
 		// iterate through y loop
@@ -56,13 +78,13 @@ void poisson_dirichlet (double * __restrict__ source,
 				else
 					res += Vbound;
 
-				if (z < zsize - 1)
+				//if (z < zsize - 1)
 					res += input[(((z + 1) * ysize) + y) * xsize + x];
-				else
-					res += Vbound;
-				if (z > 0)
-					res += input[(((z - 1) * ysize) + y) * xsize + x];
-				else
+				//else
+					//res += Vbound;
+				//if (z > 0)
+					//res += input[(((z - 1) * ysize) + y) * xsize + x];
+				//else
 					res += Vbound;
 			}
 		}
@@ -91,6 +113,77 @@ void poisson_dirichlet (double * __restrict__ source,
 				else
 					res += Vbound;
 
+				//if (z < zsize - 1)
+					//res += input[(((z + 1) * ysize) + y) * xsize + x];
+				//else
+					res += Vbound;
+				//if (z > 0)
+					res += input[(((z - 1) * ysize) + y) * xsize + x];
+				//else
+					//res += Vbound;
+			}
+		}
+
+		// y cases
+		// Deal with y = zero
+		y = 0;
+		// iterate through z loop
+		for (unsigned int z = 0; z < ysize; z++) {	
+			// iterate through x loop
+			for (unsigned int x = 0; x < zsize; x += xsize) {
+				if (x < xsize - 1)
+					res += input[((z * ysize) + y) * xsize + (x + 1)];
+				else
+					res += Vbound;
+				if (x > 0)
+					res += input[((z * ysize) + y) * xsize + (x - 1)];
+				else
+					res += Vbound;
+
+				//if (y < ysize - 1)
+					res += input[((z * ysize) + (y + 1)) * xsize + x];
+				//else
+					//res += Vbound;
+				//if (y > 0)
+					//res += input[((z * ysize) + (y - 1)) * xsize + x];
+				//else
+					res += Vbound;
+
+				if (z < zsize - 1)
+					res += input[(((z + 1) * ysize) + y) * xsize + x];
+				else
+					//res += Vbound;
+				if (z > 0)
+					//res += input[(((z - 1) * ysize) + y) * xsize + x];
+				else
+					res += Vbound;
+			}
+		}
+			
+		// Deal with y = max
+		y = ymax;
+		// iterate through z loop
+		for (unsigned int z = 0; z < ysize; z++) {	
+			// iterate through x loop
+			for (unsigned int x = 0; x < zsize; x += xsize) {
+				if (x < xsize - 1)
+					res += input[((z * ysize) + y) * xsize + (x + 1)];
+				else
+					res += Vbound;
+				if (x > 0)
+					res += input[((z * ysize) + y) * xsize + (x - 1)];
+				else
+					res += Vbound;
+
+				//if (y < ysize - 1)
+					//res += input[((z * ysize) + (y + 1)) * xsize + x];
+				//else
+					res += Vbound;
+				//if (y > 0)
+					res += input[((z * ysize) + (y - 1)) * xsize + x];
+				//else
+					//res += Vbound;
+
 				if (z < zsize - 1)
 					res += input[(((z + 1) * ysize) + y) * xsize + x];
 				else
@@ -102,27 +195,6 @@ void poisson_dirichlet (double * __restrict__ source,
 			}
 		}
 
-		// Loop through general cases (i.e. 0 < x,y,z < maximum) having dealt with zero and maximum seperately
-		//  Means no condition checking in loops
-		for (unsigned int z = 1; z < zsize-1; z++) {
-			for (unsigned int y = 1; y < ysize-1; y++) {
-				for  {(unsigned int x = 1; x < xsize-1; x++)
-					res += input[(( (z) * ysize) + y ) * xsize + (x + 1)];
-					res += input[(( (z) * ysize) + y ) * xsize + (x - 1)];
-
-					res += input[( (z * ysize) + (y + 1) ) * xsize + x];
-					res += input[( (z * ysize) + (y - 1) ) * xsize + x];
-
-					res += input[(( (z + 1) * ysize) + y) * xsize + x];
-					res += input[(( (z - 1) * ysize) + y) * xsize + x];
-						
-					res -= delta * delta * source[((z * ysize) + y) * xsize + x];
-					res /= 6;
-					potential[((z * ysize) + y) * xsize + x] = res;
-				}
-			}
-		}
-	
 		memcpy(input, potential, size);
 	}
 	free(input);
