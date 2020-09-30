@@ -1,0 +1,80 @@
+Thread count: 2 Size: 100  Iterations: 100
+Time (s): 0.524705171585083
+Thread count: 2 Size: 100  Iterations: 200
+Time (s): 1.041311502456665
+Thread count: 2 Size: 150  Iterations: 100
+Time (s): 1.5263659954071045
+Thread count: 2 Size: 150  Iterations: 200
+Time (s): 3.1962385177612305
+Thread count: 2 Size: 200  Iterations: 100
+Time (s): 3.5217361450195312
+Thread count: 2 Size: 200  Iterations: 200
+Time (s): 7.267014265060425
+Thread count: 2 Size: 250  Iterations: 100
+Time (s): 6.873072624206543
+Thread count: 2 Size: 250  Iterations: 200
+Time (s): 14.104384183883667
+Thread count: 2 Size: 300  Iterations: 100
+Time (s): 11.919942855834961
+Thread count: 2 Size: 300  Iterations: 200
+Time (s): 24.02828598022461
+Thread count: 4 Size: 100  Iterations: 100
+Time (s): 0.5376043319702148
+Thread count: 4 Size: 100  Iterations: 200
+Time (s): 0.9994587898254395
+Thread count: 4 Size: 150  Iterations: 100
+Time (s): 1.4954900741577148
+Thread count: 4 Size: 150  Iterations: 200
+Time (s): 3.1747963428497314
+Thread count: 4 Size: 200  Iterations: 100
+Time (s): 3.5048274993896484
+Thread count: 4 Size: 200  Iterations: 200
+Time (s): 7.264452695846558
+Thread count: 4 Size: 250  Iterations: 100
+Time (s): 6.828468084335327
+Thread count: 4 Size: 250  Iterations: 200
+Time (s): 13.985888481140137
+Thread count: 4 Size: 300  Iterations: 100
+Time (s): 11.89492130279541
+Thread count: 4 Size: 300  Iterations: 200
+Time (s): 24.097930908203125
+Thread count: 6 Size: 100  Iterations: 100
+Time (s): 0.5186550617218018
+Thread count: 6 Size: 100  Iterations: 200
+Time (s): 1.0375988483428955
+Thread count: 6 Size: 150  Iterations: 100
+Time (s): 1.502199411392212
+Thread count: 6 Size: 150  Iterations: 200
+Time (s): 3.194796085357666
+Thread count: 6 Size: 200  Iterations: 100
+Time (s): 3.492642402648926
+Thread count: 6 Size: 200  Iterations: 200
+Time (s): 7.2429563999176025
+Thread count: 6 Size: 250  Iterations: 100
+Time (s): 6.83911395072937
+Thread count: 6 Size: 250  Iterations: 200
+Time (s): 14.017498254776001
+Thread count: 6 Size: 300  Iterations: 100
+Time (s): 11.88743257522583
+Thread count: 6 Size: 300  Iterations: 200
+Time (s): 24.065561056137085
+Thread count: 8 Size: 100  Iterations: 100
+Time (s): 0.5456902980804443
+Thread count: 8 Size: 100  Iterations: 200
+Time (s): 0.9915592670440674
+Thread count: 8 Size: 150  Iterations: 100
+Time (s): 1.522022008895874
+Thread count: 8 Size: 150  Iterations: 200
+Time (s): 3.166449785232544
+Thread count: 8 Size: 200  Iterations: 100
+Time (s): 3.5352752208709717
+Thread count: 8 Size: 200  Iterations: 200
+Time (s): 7.3578033447265625
+Thread count: 8 Size: 250  Iterations: 100
+Time (s): 6.875517129898071
+Thread count: 8 Size: 250  Iterations: 200
+Time (s): 14.048908948898315
+Thread count: 8 Size: 300  Iterations: 100
+Time (s): 11.911563873291016
+Thread count: 8 Size: 300  Iterations: 200
+Time (s): 24.01339030265808
