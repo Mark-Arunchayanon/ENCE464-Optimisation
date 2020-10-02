@@ -1,80 +1,60 @@
-Thread count: 2 Size: 100  Iterations: 100
-Time (s): 0.524705171585083
-Thread count: 2 Size: 100  Iterations: 200
-Time (s): 1.041311502456665
-Thread count: 2 Size: 150  Iterations: 100
-Time (s): 1.5263659954071045
-Thread count: 2 Size: 150  Iterations: 200
-Time (s): 3.1962385177612305
-Thread count: 2 Size: 200  Iterations: 100
-Time (s): 3.5217361450195312
-Thread count: 2 Size: 200  Iterations: 200
-Time (s): 7.267014265060425
-Thread count: 2 Size: 250  Iterations: 100
-Time (s): 6.873072624206543
-Thread count: 2 Size: 250  Iterations: 200
-Time (s): 14.104384183883667
-Thread count: 2 Size: 300  Iterations: 100
-Time (s): 11.919942855834961
-Thread count: 2 Size: 300  Iterations: 200
-Time (s): 24.02828598022461
-Thread count: 4 Size: 100  Iterations: 100
-Time (s): 0.5376043319702148
-Thread count: 4 Size: 100  Iterations: 200
-Time (s): 0.9994587898254395
-Thread count: 4 Size: 150  Iterations: 100
-Time (s): 1.4954900741577148
-Thread count: 4 Size: 150  Iterations: 200
-Time (s): 3.1747963428497314
-Thread count: 4 Size: 200  Iterations: 100
-Time (s): 3.5048274993896484
-Thread count: 4 Size: 200  Iterations: 200
-Time (s): 7.264452695846558
-Thread count: 4 Size: 250  Iterations: 100
-Time (s): 6.828468084335327
-Thread count: 4 Size: 250  Iterations: 200
-Time (s): 13.985888481140137
-Thread count: 4 Size: 300  Iterations: 100
-Time (s): 11.89492130279541
-Thread count: 4 Size: 300  Iterations: 200
-Time (s): 24.097930908203125
-Thread count: 6 Size: 100  Iterations: 100
-Time (s): 0.5186550617218018
-Thread count: 6 Size: 100  Iterations: 200
-Time (s): 1.0375988483428955
-Thread count: 6 Size: 150  Iterations: 100
-Time (s): 1.502199411392212
-Thread count: 6 Size: 150  Iterations: 200
-Time (s): 3.194796085357666
-Thread count: 6 Size: 200  Iterations: 100
-Time (s): 3.492642402648926
-Thread count: 6 Size: 200  Iterations: 200
-Time (s): 7.2429563999176025
-Thread count: 6 Size: 250  Iterations: 100
-Time (s): 6.83911395072937
-Thread count: 6 Size: 250  Iterations: 200
-Time (s): 14.017498254776001
-Thread count: 6 Size: 300  Iterations: 100
-Time (s): 11.88743257522583
-Thread count: 6 Size: 300  Iterations: 200
-Time (s): 24.065561056137085
-Thread count: 8 Size: 100  Iterations: 100
-Time (s): 0.5456902980804443
-Thread count: 8 Size: 100  Iterations: 200
-Time (s): 0.9915592670440674
-Thread count: 8 Size: 150  Iterations: 100
-Time (s): 1.522022008895874
-Thread count: 8 Size: 150  Iterations: 200
-Time (s): 3.166449785232544
-Thread count: 8 Size: 200  Iterations: 100
-Time (s): 3.5352752208709717
-Thread count: 8 Size: 200  Iterations: 200
-Time (s): 7.3578033447265625
-Thread count: 8 Size: 250  Iterations: 100
-Time (s): 6.875517129898071
-Thread count: 8 Size: 250  Iterations: 200
-Time (s): 14.048908948898315
-Thread count: 8 Size: 300  Iterations: 100
-Time (s): 11.911563873291016
-Thread count: 8 Size: 300  Iterations: 200
-Time (s): 24.01339030265808
+Thread count: 0 Size: 100  Iterations: 500
+Time (s): 2.622401475906372
+Thread count: 0 Size: 200  Iterations: 500
+Time (s): 20.48872137069702
+Thread count: 0 Size: 300  Iterations: 500
+Time (s): 68.85719060897827
+Thread count: 0 Size: 400  Iterations: 500
+Time (s): 165.4860827922821
+Thread count: 0 Size: 500  Iterations: 500
+Time (s): 434.3001980781555
+Thread count: 2 Size: 100  Iterations: 500
+Time (s): 2.8584485054016113
+Thread count: 2 Size: 200  Iterations: 500
+Time (s): 19.947611093521118
+Thread count: 2 Size: 300  Iterations: 500
+Time (s): 66.70792722702026
+Thread count: 2 Size: 400  Iterations: 500
+Time (s): 163.67817902565002
+Thread count: 2 Size: 500  Iterations: 500
+Time (s): 326.63240790367126
+Thread count: 4 Size: 100  Iterations: 500
+Time (s): 2.615365982055664
+Thread count: 4 Size: 200  Iterations: 500
+Time (s): 19.951209545135498
+Thread count: 4 Size: 300  Iterations: 500
+Time (s): 67.44189953804016
+Thread count: 4 Size: 400  Iterations: 500
+Time (s): 161.08561038970947
+Thread count: 4 Size: 500  Iterations: 500
+Time (s): 322.9686269760132
+Thread count: 8 Size: 100  Iterations: 500
+Time (s): 2.6020944118499756
+Thread count: 8 Size: 200  Iterations: 500
+Time (s): 20.007010221481323
+Thread count: 8 Size: 300  Iterations: 500
+Time (s): 66.5540988445282
+Thread count: 8 Size: 400  Iterations: 500
+Time (s): 163.39628219604492
+Thread count: 8 Size: 500  Iterations: 500
+Time (s): 323.7193100452423
+Thread count: 16 Size: 100  Iterations: 500
+Time (s): 2.6265482902526855
+Thread count: 16 Size: 200  Iterations: 500
+Time (s): 19.96607232093811
+Thread count: 16 Size: 300  Iterations: 500
+Time (s): 66.71558690071106
+Thread count: 16 Size: 400  Iterations: 500
+Time (s): 163.0129692554474
+Thread count: 16 Size: 500  Iterations: 500
+Time (s): 328.92958307266235
+Thread count: 32 Size: 100  Iterations: 500
+Time (s): 2.5838162899017334
+Thread count: 32 Size: 200  Iterations: 500
+Time (s): 20.34171962738037
+Thread count: 32 Size: 300  Iterations: 500
+Time (s): 67.28032779693604
+Thread count: 32 Size: 400  Iterations: 500
+Time (s): 163.38032460212708
+Thread count: 32 Size: 500  Iterations: 500
+Time (s): 323.85623359680176
