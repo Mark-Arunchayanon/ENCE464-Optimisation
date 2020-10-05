@@ -1,5 +1,10 @@
 """
-
+Filescrape.py
+Opens the output log file,
+    retrieves the threads, sizes and times
+    plots them accordingly
+Coded by Jesse Shehan
+@author: jps111
 @author: mfb31
 """
 
@@ -10,12 +15,58 @@ import re
 import math
 import matplotlib.pyplot as plt
 
+def fileScrapeJ():
+    data = []
+    with open("output.txt", "r") as myfile:
+        lines = myfile.readlines()
+        for i in range(0, len(lines), 2):
+            fst_line = lines[i]
+            snd_line = lines[i + 1]
+
+            _0, _1, threads, _3, size, _5, iters = fst_line.split()
+            _0, _1, t = snd_line.split()
+
+            threads = int(threads)
+            size = int(size)
+            iters = int(iters)
+            t = float(t)
+
+            data.append((threads, size, iters, t))
+    return data
+
+def unique(xs):
+    return list(set(xs))
+def get_thread(x):
+    return x[0]
+def get_size(x):
+    return x[1]
+def get_iters(x):
+    return x[2]
+def get_time(x):
+    return x[3]
+
+def get_times_from_data(threads, data):
+    return list(map(get_time, filter(lambda x: x[0] == threads, data)))
+
+def plotter(data):
+
+    xs = unique(map(get_size, data)) # sizes = xs
+    
+    threads = sorted(unique(map(get_thread, data))) # unique thread sizes
+
+    for thread in sorted(threads):
+        plt.plot(xs, get_times_from_data(thread, data))
+    
+    plt.legend(threads)
+    plt.show()
+
+
 def fileScrape():
     with open ("output.txt", "rt") as myfile:
 
-        listThreads = []
         listTimes = []
         listSizes = []
+        listThreads = [listSizes,listTimes]
 
         for myline in myfile:              # For each line, read to a string,
             # Find thread value
@@ -26,7 +77,7 @@ def fileScrape():
                 intText = myline[newInt:]
                 anInt, sep, tail = intText.partition(' ')
                 threadNum = int(anInt)
-                listThreads.append(threadNum)
+                #listThreads.append(threadNum)
                 #print
 
             nextIndex = myline.find('Size: ')
@@ -52,6 +103,7 @@ def fileScrape():
             #print(listThreads)
             #print(listTimes)
             #print(listSizes)
+            listThreads[threadNum].append(sizeInt, timeFloat)
 
     # For test only, check output     
     print(listThreads)
@@ -80,4 +132,4 @@ def fileScrape():
         plt.show()
 
 if __name__ == "__main__":
-    fileScrape()
+    print(plotter(fileScrapeJ()))
