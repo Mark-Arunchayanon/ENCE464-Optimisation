@@ -19,6 +19,6 @@ poisson_memcpy: poisson_test.cpp
 	$(CC) $(CFLAGS) -o $@ $^ $@.cpp
 
 clean:
-	rm -f poisson_test poisson_x_inner poisson_loop_switching poisson_memcpy
+	rm -f poisson_test poisson_naive poisson_x_inner poisson_loop_switching poisson_memcpy
 
 .PHONY: all clean
