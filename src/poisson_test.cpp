@@ -3,7 +3,12 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "poisson.hpp"
+
+extern void poisson_dirichlet (double *__restrict__ source,
+                        double *__restrict__ potential,
+                        double Vbound,
+                        unsigned int xsize, unsigned int ysize, unsigned int zsize,
+                        double delta, unsigned int maxiters, unsigned int numcores);
 
 int main (int argc, char *argv[])
 {

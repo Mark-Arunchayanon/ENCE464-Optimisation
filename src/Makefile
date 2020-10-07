@@ -1,8 +1,18 @@
-all: poisson_test
+CC=g++
+CFLAG=-O3 -std=c++11 -Wall -g3
+
+all: poisson_test poisson_x_inner poisson_loop_switching
 
 poisson_test: poisson_test.cpp poisson.cpp
-	g++ -O3 -std=c++11 -Wall -g3 -o $@ $^ -lpthread
+	$(CC) $(CFLAGS) -o $@ $^ -lpthread
+	
+poisson_x_inner: poisson_test.cpp
+	$(CC) $(CFLAGS) -o $@ $^ $@.cpp
+	
+poisson_loop_switching: poisson_test.cpp
+	$(CC) $(CFLAGS) -o $@ $^ $@.cpp
 
 clean:
-	rm poisson_test
+	rm -f poisson_test poisson_x_inner poisson_loop_switching
 
+.PHONY: all clean
