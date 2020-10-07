@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 
 #define STORE 	res -= ta->delta * ta->delta * ta->source[((z * ta->ysize) + y) * ta->xsize + x]; \
 				res /= 6; \
@@ -19,6 +20,8 @@
 #define X_MID	res += ta->input[(( (z) * ta->ysize) + y ) * ta->xsize + (x + 1)] + ta->input[(( (z) * ta->ysize) + y ) * ta->xsize + (x - 1)];
 #define X_MAX	res += ta->input[((z * ta->ysize) + y) * ta->xsize + (x - 1)] + ta->Vbound;
 
+pthread_barrier_t  barrier; // the barrier synchronization object
+
 void *thread(void* args);
 
 // structure we're going to use for arguments to our pthread functions
@@ -30,12 +33,16 @@ struct thread_args {
 	unsigned int xsize;
 	unsigned int ysize;
 	unsigned int zsize;
+	unsigned int zstart;
+	unsigned int zend;
 	double delta;
 	unsigned int numiters;
 	unsigned int numcores;
+	unsigned int block_size;
 	size_t size;
 	pthread_t thread;
 	FILE *ptr;
+	
 }thread_args;
 
 /// Solve Poisson's equation for a rectangular box with Dirichlet
@@ -75,29 +82,60 @@ void poisson_dirichlet (double * __restrict__ source,
 	}
 	memcpy(input, source, size);
 
+	unsigned int remainder = 0;
+	unsigned int block_size = 0;
+	if ((zsize % numcores) >= 1) {
+		block_size = floor(zsize / numcores);
+		remainder = zsize % numcores;
+	}
+	else {
+		block_size = zsize / numcores;
+	}
+	
+	pthread_barrier_init (&barrier, NULL, numcores);
+
 	// Split up the incoming data, and spawn the threads
 	for (unsigned int i = 0; i < numcores; i++) {
-		ta[i].source = source;
+		ta[i].source 	= source;
 		ta[i].potential = potential;
-		ta[i].input = input;
-		ta[i].Vbound = Vbound;
-		ta[i].xsize = xsize;
-		ta[i].ysize = ysize;
-		ta[i].zsize = zsize;
-		ta[i].delta = delta;
-		ta[i].numiters = numiters;
-		ta[i].numcores = numcores;
-		ta[i].size = size;
-		ta[i].ptr = ptr;
+		ta[i].input 	= input;
+		ta[i].Vbound 	= Vbound;
+		ta[i].xsize 	= xsize;
+		ta[i].ysize 	= ysize;
+		ta[i].zsize 	= zsize;
+		ta[i].delta 	= delta;
+		ta[i].zstart 	= i * block_size;
+		ta[i].numiters 	= numiters;
+		ta[i].numcores 	= numcores;
+		ta[i].size 		= size;
+		ta[i].ptr 		= ptr;
 		
-		if (pthread_create(&ta[i].thread, NULL, thread, (void *)&ta[i]) < 0)
+		if (i == numcores - 1) {
+			ta[i].zend = (i * block_size) + (block_size - 1) + remainder;
+		} else {
+			ta[i].zend = (i * block_size) + (block_size - 1);
+		}
+		
+		if (pthread_create(&ta[i].thread, NULL, thread, (void *)&ta[i]) < 0) {
 			fprintf(stderr, "Could not create thread %d\n", i);
+		}
+		
+		printf("Start: %d, ", ta[i].zstart);
+		printf("End: %d\n", ta[i].zend);
 	}
 
 	// Wait for each thread to finish, and add in its partial sum
 	for (unsigned int i = 0; i < numcores; i++) {
 		pthread_join(ta[i].thread, NULL);
 	}
+	
+	//~ for (unsigned int y = 0; y < ysize; y++) {
+		//~ for (unsigned int z = 0; z < zsize; z++) {
+			//~ for (unsigned int x = 0; x < xsize; x++) {
+				//~ fprintf(ptr, "x: %d | y: %d | z: %d - %2f\n", x, y, z, potential[((z * ysize) + y) * xsize + x]);
+			//~ }
+		//~ }
+	//~ }
 	
 	fclose(ptr);
 	free(input);
@@ -107,13 +145,23 @@ void poisson_dirichlet (double * __restrict__ source,
 void *thread(void* args) {
 	
 	struct thread_args *ta = (struct thread_args*)args;
+	unsigned int is_zmin = 0;
+	//~ unsigned int is_zmax = 0;
+	if (ta->zstart == 0) {
+			is_zmin = 1;
+			ta->zstart++;
+		}
+	if (ta->zend == ta->zsize - 1) {
+			//~ is_zmax = 1;
+			ta->zend--;
+		}
 	
 	for (unsigned int iter = 0; iter < ta->numiters; iter++) {
 		double res = 0;
 
 		// Loop through general cases (i.e. 0 < x,y,z < maximum) having dealt with zero and maximum seperately
 		//  Means no condition checking in loops
-		for (unsigned int z = 1; z < ta->zsize - 1; z++) {
+		for (unsigned int z = ta->zstart; z < ta->zend + 1; z++) {
 			for (unsigned int y = 1; y < ta->ysize - 1; y++) {
 				for  (unsigned int x = 1; x < ta->xsize - 1; x++) {
 					res = 0;
@@ -133,24 +181,26 @@ void *thread(void* args) {
 		}
 		
 		//x y z'
-		for (unsigned int y = 1; y < ta->ysize - 1; y++) {
-			for (unsigned int x = 1; x < ta->xsize - 1; x++) {
-				res = 0;
-				unsigned int z = 0;
-				
-				Z_0
-				Y_MID X_MID STORE
-				
-				res = 0;
-				z = ta->zsize - 1;
-				
-				Z_MAX Y_MID X_MID
-				STORE
+		if (is_zmin) {
+			for (unsigned int y = 1; y < ta->ysize - 1; y++) {
+				for (unsigned int x = 1; x < ta->xsize - 1; x++) {
+					res = 0;
+					unsigned int z = 0;
+					
+					Z_0
+					Y_MID X_MID STORE
+					
+					res = 0;
+					z = ta->zsize - 1;
+					
+					Z_MAX Y_MID X_MID
+					STORE
+				}
 			}
 		}
 		
 		//x y' z
-		for (unsigned int z = 1; z < ta->zsize - 1; z++) {
+		for (unsigned int z = ta->zstart; z < ta->zend + 1; z++) {
 			for  (unsigned int x = 1; x < ta->xsize - 1; x++) {
 				res = 0;
 				unsigned int y = 0;
@@ -165,39 +215,41 @@ void *thread(void* args) {
 		}
 		
 		//x y' z'
-		for  (unsigned int x = 1; x < ta->xsize - 1; x++) {
-			res = 0;
-			unsigned int z = 0;
-			unsigned int y = 0;
-			// z = 0
-			Z_0 Y_0 X_MID
-			STORE
-			
-			res = 0;
-			//--
-			y = ta->ysize - 1;
-			// z = 0
-			Z_0 Y_MAX X_MID
-			STORE
-			
-			res = 0;
-			//---
-			z = ta->zsize -1;
-			y = 0;
-			// z = max
-			Z_MAX Y_0 X_MID
-			STORE
-			
-			res = 0;
-			//--
-			y = ta->ysize - 1;
-			// z = max
-			Z_MAX Y_MAX X_MID
-			STORE
+		if (is_zmin) {
+			for  (unsigned int x = 1; x < ta->xsize - 1; x++) {
+				res = 0;
+				unsigned int z = 0;
+				unsigned int y = 0;
+				// z = 0
+				Z_0 Y_0 X_MID
+				STORE
+				
+				res = 0;
+				//--
+				y = ta->ysize - 1;
+				// z = 0
+				Z_0 Y_MAX X_MID
+				STORE
+				
+				res = 0;
+				//---
+				z = ta->zsize -1;
+				y = 0;
+				// z = max
+				Z_MAX Y_0 X_MID
+				STORE
+				
+				res = 0;
+				//--
+				y = ta->ysize - 1;
+				// z = max
+				Z_MAX Y_MAX X_MID
+				STORE
+			}
 		}
 		
 		//x' y z
-		for (unsigned int z = 1; z < ta->zsize - 1; z++) {
+		for (unsigned int z = ta->zstart; z < ta->zend + 1; z++) {
 			for (unsigned int y = 1; y < ta->ysize - 1; y++) {
 				res = 0;
 				unsigned int x = 0;
@@ -214,39 +266,41 @@ void *thread(void* args) {
 		}
 		
 		//x' y z'
-		for (unsigned int y = 1; y < ta->ysize - 1; y++) {
-			res = 0;
-			unsigned int x = 0;
-			unsigned int z = 0;
-			// x = 0
-			X_0 Z_0 Y_MID
-			STORE
-			
-			res = 0;
-			//--
-			z = ta->zsize - 1;
-			// x = 0
-			X_0 Z_MAX Y_MID
-			STORE
-			
-			res = 0;
-			//--
-			x = ta->xsize - 1;
-			z = 0;
-			// x = max
-			X_MAX Z_0 Y_MID
-			STORE
-			
-			res = 0;
-			//--
-			z = ta->zsize - 1;
-			// x = max
-			X_MAX Z_MAX Y_MID
-			STORE
-		}	
+		if (is_zmin) {
+			for (unsigned int y = 1; y < ta->ysize - 1; y++) {
+				res = 0;
+				unsigned int x = 0;
+				unsigned int z = 0;
+				// x = 0
+				X_0 Z_0 Y_MID
+				STORE
+				
+				res = 0;
+				//--
+				z = ta->zsize - 1;
+				// x = 0
+				X_0 Z_MAX Y_MID
+				STORE
+				
+				res = 0;
+				//--
+				x = ta->xsize - 1;
+				z = 0;
+				// x = max
+				X_MAX Z_0 Y_MID
+				STORE
+				
+				res = 0;
+				//--
+				z = ta->zsize - 1;
+				// x = max
+				X_MAX Z_MAX Y_MID
+				STORE
+			}	
+		}
 		
 		//x' y' z
-		for (unsigned int z = 1; z < ta->zsize - 1; z++) {
+		for (unsigned int z = ta->zstart; z < ta->zend + 1; z++) {
 			res = 0;
 			unsigned int x = 0;
 			unsigned int y = 0;
@@ -278,76 +332,77 @@ void *thread(void* args) {
 		}
 		
 		//x' y' z'
-		unsigned int x = 0;
-		unsigned int y = 0;
-		unsigned int z = 0;
-		res = 0;
-		// x = 0
-		X_0 Y_0 Z_0;
-		STORE;
-		
-		res = 0;
-		//--
-		z = ta->zsize - 1;
-		// x = 0, y = 0, z = MAX
-		X_0 Y_0 Z_MAX;
-		STORE;
-		
-		res = 0;
-		//--
-		y = ta->ysize - 1;
-		z = 0;
-		// x = 0
-		X_0 Y_MAX Z_0;
-		STORE;
-		
-		res = 0;
-		//--
-		z = ta->zsize - 1;
-		// x = 0
-		X_0 Y_MAX Z_MAX;	
-		STORE;
-		
-		res = 0;
-		//--
-		x = ta->xsize - 1;
-		y = 0;
-		z = 0;
-		// x = max
-		X_MAX Y_0 Z_0;
-		STORE;
-		
-		res = 0;
-		//--
-		z = ta->zsize - 1;
-		// x = max
-		X_MAX Y_0 Z_MAX;	
-		STORE;
-		
-		res = 0;
-		//--
-		y = ta->ysize - 1;
-		z = 0;
-		// x = max
-		X_MAX Y_MAX Z_0;
-		STORE;
-		
-		res = 0;
-		//---
-		x = ta->xsize - 1;
-		y = ta->ysize - 1;
-		z = ta->zsize - 1;
-		// x = max
-		X_MAX Y_MAX Z_MAX;	
-		STORE;
-
+		if (is_zmin) {
+			unsigned int x = 0;
+			unsigned int y = 0;
+			unsigned int z = 0;
+			res = 0;
+			// x = 0
+			X_0 Y_0 Z_0;
+			STORE;
+			
+			res = 0;
+			//--
+			z = ta->zsize - 1;
+			// x = 0, y = 0, z = MAX
+			X_0 Y_0 Z_MAX;
+			STORE;
+			
+			res = 0;
+			//--
+			y = ta->ysize - 1;
+			z = 0;
+			// x = 0
+			X_0 Y_MAX Z_0;
+			STORE;
+			
+			res = 0;
+			//--
+			z = ta->zsize - 1;
+			// x = 0
+			X_0 Y_MAX Z_MAX;	
+			STORE;
+			
+			res = 0;
+			//--
+			x = ta->xsize - 1;
+			y = 0;
+			z = 0;
+			// x = max
+			X_MAX Y_0 Z_0;
+			STORE;
+			
+			res = 0;
+			//--
+			z = ta->zsize - 1;
+			// x = max
+			X_MAX Y_0 Z_MAX;	
+			STORE;
+			
+			res = 0;
+			//--
+			y = ta->ysize - 1;
+			z = 0;
+			// x = max
+			X_MAX Y_MAX Z_0;
+			STORE;
+			
+			res = 0;
+			//---
+			x = ta->xsize - 1;
+			y = ta->ysize - 1;
+			z = ta->zsize - 1;
+			// x = max
+			X_MAX Y_MAX Z_MAX;	
+			STORE;
+		}
 
 		double *temp = ta->input;
 		ta->input = ta->potential;
 		ta->potential = temp;
 		
 		
-		
+		pthread_barrier_wait (&barrier);
 		//fprintf(ptr, "%2f\n", *potential);
 		//memcpy(input, potential, size);
 	}
@@ -358,14 +413,8 @@ void *thread(void* args) {
 		//~ } else {
 			//~ free(ta->potential);
 		//~ }
-	for (unsigned int y = 0; y < ta->ysize; y++) {
-		for (unsigned int z = 0; z < ta->zsize; z++) {
-			for (unsigned int x = 0; x < ta->xsize; x++) {
-				fprintf(ta->ptr, "x: %d | y: %d | z: %d - %2f\n", x, y, z, ta->potential[((z * ta->ysize) + y) * ta->xsize + x]);
-			}
-		}
-	}
+	
 	//~ fclose(ptr);
 	//~ free(input); // free in the main
-	return 0;
+	pthread_exit(NULL);
 }
