@@ -129,13 +129,13 @@ void poisson_dirichlet (double * __restrict__ source,
 		pthread_join(ta[i].thread, NULL);
 	}
 	
-	//~ for (unsigned int y = 0; y < ysize; y++) {
-		//~ for (unsigned int z = 0; z < zsize; z++) {
-			//~ for (unsigned int x = 0; x < xsize; x++) {
-				//~ fprintf(ptr, "x: %d | y: %d | z: %d - %2f\n", x, y, z, potential[((z * ysize) + y) * xsize + x]);
-			//~ }
-		//~ }
-	//~ }
+	for (unsigned int y = 0; y < ysize; y++) {
+		for (unsigned int z = 0; z < zsize; z++) {
+			for (unsigned int x = 0; x < xsize; x++) {
+				fprintf(ptr, "x: %d | y: %d | z: %d - %2f\n", x, y, z, potential[((z * ysize) + y) * xsize + x]);
+			}
+		}
+	}
 	
 	fclose(ptr);
 	free(input);
