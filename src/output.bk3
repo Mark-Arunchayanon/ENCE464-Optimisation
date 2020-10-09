@@ -1,0 +1,14 @@
+Thread count: 8 Size: 101  Iterations: 100
+Time (s): 3.992233991622925
+Thread count: 8 Size: 201  Iterations: 100
+Time (s): 30.43216586112976
+Thread count: 8 Size: 301  Iterations: 100
+Time (s): 102.73241996765137
+Thread count: 8 Size: 401  Iterations: 100
+Time (s): 245.01130533218384
+Thread count: 8 Size: 501  Iterations: 100
+Time (s): 487.02300810813904
+Thread count: 8 Size: 601  Iterations: 100
+Time (s): 817.1192483901978
+Thread count: 8 Size: 701  Iterations: 100
+Time (s): 1304.1002025604248

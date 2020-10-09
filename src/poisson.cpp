@@ -120,8 +120,8 @@ void poisson_dirichlet (double * __restrict__ source,
 			fprintf(stderr, "Could not create thread %d\n", i);
 		}
 		
-		printf("Start: %d, ", ta[i].zstart);
-		printf("End: %d\n", ta[i].zend);
+		//printf("Start: %d, ", ta[i].zstart);
+		//printf("End: %d\n", ta[i].zend);
 	}
 
 	// Wait for each thread to finish, and add in its partial sum
