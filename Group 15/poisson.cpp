@@ -69,10 +69,10 @@ void poisson_dirichlet (double * __restrict__ source,
     // source[i, j, k] is accessed with source[((k * ysize) + j) * xsize + i]
     // potential[i, j, k] is accessed with potential[((k * ysize) + j) * xsize + i]    
     size_t size = (size_t)ysize * zsize * xsize * sizeof(double);
-    FILE *ptr;
-    ptr = fopen("result_optimised.txt", "w");
-    fclose(ptr);
-    ptr = fopen("result_optimised.txt", "a");
+    //~ FILE *ptr;
+    //~ ptr = fopen("result_optimised.txt", "w");
+    //~ fclose(ptr);
+    //~ ptr = fopen("result_optimised.txt", "a");
 	double *input = (double *)malloc(size);
 	//~ double *temp = (double *)malloc(size);
 	
@@ -108,7 +108,7 @@ void poisson_dirichlet (double * __restrict__ source,
 		ta[i].numiters 	= numiters;
 		ta[i].numcores 	= numcores;
 		ta[i].size 		= size;
-		ta[i].ptr 		= ptr;
+		//~ ta[i].ptr 		= ptr;
 		
 		if (i == numcores - 1) {
 			ta[i].zend = (i * block_size) + (block_size - 1) + remainder;
@@ -137,7 +137,7 @@ void poisson_dirichlet (double * __restrict__ source,
 		//~ }
 	//~ }
 	
-	fclose(ptr);
+	//~ fclose(ptr);
 	free(input);
 }
 
