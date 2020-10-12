@@ -1,3 +1,13 @@
+Thread count: 0 Size: 101  Iterations: 500
+Time (s): 0.1911301612854004
+Thread count: 0 Size: 201  Iterations: 500
+Time (s): 0.2346651554107666
+Thread count: 0 Size: 301  Iterations: 500
+Time (s): 0.4145326614379883
+Thread count: 0 Size: 401  Iterations: 500
+Time (s): 0.47812342643737793
+Thread count: 0 Size: 501  Iterations: 500
+Time (s): 0.8923933506011963
 Thread count: 1 Size: 101  Iterations: 500
 Time (s): 14.418759107589722
 Thread count: 1 Size: 201  Iterations: 500
